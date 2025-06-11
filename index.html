@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Gerenciamento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: block; /* Garante que o container apareça normalmente */
+        }
+
+        /* Cabeçalho/Menu */
+        .header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: flex-end; /* Alinha o menu à direita */
+            align-items: center;
+            padding-right: 20px;
+        }
+
+        .header .menu {
+            display: flex;
+        }
+
+        .header .menu a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .header .menu a:hover {
+            color: #4a90e2;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 10px;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            width: fit-content;
+        }
+
+        /* Opções do Painel */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .dashboard-option {
+            background-color: #e0e8f0; /* Cor padrão */
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            border: 1px solid #d0d8e0;
+        }
+
+        .dashboard-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .dashboard-option h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #2c3e50;
+        }
+
+        .dashboard-option p {
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        /* Modal de Login */
+        .modal {
+            display: none; /* Oculto por padrão */
+            position: fixed; /* Permanece no lugar */
+            z-index: 1000; /* Fica no topo */
+            left: 0;
+            top: 0;
+            width: 100%; /* Largura total */
+            height: 100%; /* Altura total */
+            overflow: auto; /* Habilita scroll se necessário */
+            background-color: rgba(0,0,0,0.6); /* Fundo preto com opacidade */
+            display: flex; /* Usa flexbox para centralizar */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative; /* Para posicionamento do botão de fechar */
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="url"],
+        .form-group input[type="color"],
+        .form-group textarea {
+            width: calc(100% - 22px); /* Ajusta para padding e borda */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box; /* Inclui padding e borda na largura e altura total do elemento */
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .modal button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal button:hover {
+            background-color: #357ABD;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        /* Estilos do Painel de Administração */
+        .admin-panel {
+            border: 2px dashed #4a90e2;
+            background-color: #eaf3f9;
+            padding: 30px;
+        }
+
+        .admin-panel h1 {
+            color: #2c3e50;
+            border-bottom-color: #3498db;
+        }
+
+        .admin-section {
+            background-color: #f7fafd;
+            border: 1px solid #d3e0f0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .admin-section h2 {
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            border-bottom: 1px solid #cdd4da;
+            padding-bottom: 10px;
+        }
+
+        .admin-section h3 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .admin-panel .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .admin-panel .form-grid .full-width {
+            grid-column: 1 / -1; /* Ocupa todas as colunas */
+        }
+
+        .admin-panel .button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            margin-right: 10px; /* Espaço entre botões */
+        }
+
+        .admin-panel .button-add {
+            background-color: #4a90e2;
+        }
+        .admin-panel .button-add:hover {
+            background-color: #357ABD;
+        }
+
+        .admin-panel .button:hover {
+            background-color: #218838;
+        }
+
+        .admin-panel .logout-button {
+            background-color: #e74c3c;
+            float: right;
+            margin-top: -60px; /* Ajuste para alinhar com o título */
+            margin-right: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .admin-panel .logout-button:hover {
+            background-color: #c0392b;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options-list li {
+            background-color: #f0f6fc;
+            border: 1px solid #d8e6f2;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .options-list li span {
+            flex-grow: 1;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .options-list li .actions button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-left: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .options-list li .actions button.edit-btn {
+            background-color: #3498db;
+        }
+        .options-list li .actions button.edit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .options-list li .actions button.remove-btn {
+            background-color: #e74c3c;
+        }
+        .options-list li .actions button.remove-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <!-- Desabilita o clique direito -->
+    <!-- O div de mensagem de DevTools foi removido, pois a detecção completa foi desativada -->
+
+    <!-- Conteúdo principal da aplicação -->
+    <header class="header" id="app-header">
+        <div class="menu">
+            <a href="#" id="login-btn">LOGIN</a>
+            <a href="mailto:seuemail@example.com">Entrar em Contato</a>
+        </div>
+    </header>
+
+    <div class="container" id="main-content">
+        <h1 id="panel-title">Opções Disponíveis</h1>
+        
+        <div class="dashboard-grid" id="dashboard-options">
+            <!-- Opções padrão serão carregadas aqui pelo JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Login de Administrador</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Usuário:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit">Entrar</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Interface de Administração (inicialmente oculta) -->
+    <div class="container admin-panel" id="admin-panel" style="display: none;">
+        <h1>Painel de Administração</h1>
+        <button id="logout-btn" class="logout-button">Sair</button>
+
+        <div class="admin-section">
+            <h2>Gerenciar Opções do Painel</h2>
+            <form id="add-option-form" class="form-grid">
+                <div class="form-group">
+                    <label for="option-name">Nome da Opção:</label>
+                    <input type="text" id="option-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="option-link">Link (URL):</label>
+                    <input type="url" id="option-link" placeholder="Ex: agenda.html ou #">
+                </div>
+                <div class="form-group">
+                    <label for="option-color">Cor de Fundo (Hex ou Nome):</label>
+                    <input type="color" id="option-color" value="#e0e8f0">
+                </div>
+                <div class="form-group full-width">
+                    <label for="option-description">Descrição:</label>
+                    <textarea id="option-description" rows="2"></textarea>
+                </div>
+                <button type="submit" class="button button-add full-width">Adicionar Nova Opção</button>
+            </form>
+            
+            <h3>Opções Atuais:</h3>
+            <ul id="current-options-list" class="options-list">
+                <!-- Opções serão listadas aqui para edição/remoção -->
+            </ul>
+        </div>
+
+        <div class="admin-section">
+            <h2>Configurações Gerais</h2>
+            <div class="form-group">
+                <label for="panel-main-title">Título Principal do Painel:</label>
+                <input type="text" id="panel-main-title">
+                <button id="save-title-btn" class="button">Salvar Título</button>
+            </div>
+            <!-- Outras configurações globais podem ser adicionadas aqui -->
+        </div>
+    </div>
+
+    <script>
+        // --- INÍCIO: MEDIDAS DE BLOQUEIO DE INSPEÇÃO (APENAS ATALHOS E CLIQUE DIREITO) ---
+
+        // Bloqueio de atalhos de teclado (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+        document.onkeydown = function(e) {
+            // Desabilita F12
+            if (e.keyCode === 123) { 
+                alert('Ferramentas de desenvolvedor bloqueadas.');
+                return false;
+            }
+            // Desabilita Ctrl+Shift+I, Ctrl+Shift+J
+            if (e.ctrlKey && e.shiftKey && (e.keyCode === 'I'.charCodeAt(0) || e.keyCode === 'J'.charCodeAt(0))) {
+                alert('Ferramentas de desenvolvedor bloqueadas.');
+                return false;
+            }
+            // Desabilita Ctrl+U (view source)
+            if (e.ctrlKey && e.keyCode === 'U'.charCodeAt(0)) {
+                alert('Visualização do código-fonte bloqueada.');
+                return false;
+            }
+        };
+
+        // --- FIM: MEDIDAS DE BLOQUEIO DE INSPEÇÃO ---
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginBtn = document.getElementById('login-btn');
+            const loginModal = document.getElementById('login-modal');
+            const closeButton = document.querySelector('.modal .close-button');
+            const loginForm = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginError = document.getElementById('login-error');
+            const mainContent = document.getElementById('main-content');
+            const adminPanel = document.getElementById('admin-panel');
+            const logoutBtn = document.getElementById('logout-btn');
+            const dashboardOptions = document.getElementById('dashboard-options');
+            const addOptionForm = document.getElementById('add-option-form');
+            const optionNameInput = document.getElementById('option-name');
+            const optionLinkInput = document.getElementById('option-link');
+            const optionColorInput = document.getElementById('option-color');
+            const optionDescriptionInput = document.getElementById('option-description');
+            const currentOptionsList = document.getElementById('current-options-list');
+            const panelMainTitleInput = document.getElementById('panel-main-title');
+            const saveTitleBtn = document.getElementById('save-title-btn');
+            const panelTitle = document.getElementById('panel-title');
+
+            // Estado do painel (persistido no localStorage)
+            // Se não houver nada no localStorage, define as opções padrão
+            let panelState = JSON.parse(localStorage.getItem('dashboardPanelState')) || {
+                title: 'Opções Disponíveis',
+                options: [
+                    { id: Date.now() + 1, name: 'Página de Contrato', link: 'contrato.html', color: '#a0d8f0', description: 'Acesse a página para preenchimento do contrato.' },
+                    { id: Date.now() + 2, name: 'Agenda de Horários', link: '#', color: '#b0f0a0', description: 'Consulte a disponibilidade de horários (em breve).' }
+                ]
+            };
+
+            // Função para salvar o estado no localStorage
+            const savePanelState = () => {
+                localStorage.setItem('dashboardPanelState', JSON.stringify(panelState));
+                renderDashboardOptions();
+                renderAdminOptionsList();
+                updatePanelTitle();
+            };
+
+            // Renderiza as opções no dashboard para o usuário comum
+            const renderDashboardOptions = () => {
+                dashboardOptions.innerHTML = '';
+                panelState.options.forEach(option => {
+                    const optionDiv = document.createElement('a'); // Usamos 'a' para links
+                    optionDiv.href = option.link;
+                    optionDiv.target = option.link !== '#' ? '_blank' : '_self'; // Abre em nova aba se for um link real
+                    optionDiv.classList.add('dashboard-option');
+                    optionDiv.style.backgroundColor = option.color;
+                    optionDiv.innerHTML = `
+                        <h3>${option.name}</h3>
+                        <p>${option.description}</p>
+                    `;
+                    dashboardOptions.appendChild(optionDiv);
+                });
+            };
+
+            // Renderiza a lista de opções no painel de administração
+            const renderAdminOptionsList = () => {
+                currentOptionsList.innerHTML = '';
+                panelState.options.forEach(option => {
+                    const listItem = document.createElement('li');
+                    listItem.dataset.id = option.id;
+                    listItem.innerHTML = `
+                        <span>${option.name} (${option.link}) - Cor: ${option.color}</span>
+                        <div class="actions">
+                            <button class="edit-btn">Editar</button>
+                            <button class="remove-btn">Remover</button>
+                        </div>
+                    `;
+                    currentOptionsList.appendChild(listItem);
+                });
+            };
+
+            // Atualiza o título principal do painel
+            const updatePanelTitle = () => {
+                panelTitle.textContent = panelState.title;
+                panelMainTitleInput.value = panelState.title;
+            };
+
+            // Inicialização da página
+            updatePanelTitle();
+            renderDashboardOptions();
+            renderAdminOptionsList();
+
+            // Event Listeners
+            loginBtn.addEventListener('click', () => {
+                loginModal.style.display = 'flex'; // Exibe o modal
+            });
+
+            closeButton.addEventListener('click', () => {
+                loginModal.style.display = 'none'; // Esconde o modal
+                loginError.textContent = ''; // Limpa mensagens de erro
+                loginForm.reset(); // Reseta o formulário
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === loginModal) {
+                    loginModal.style.display = 'none';
+                    loginError.textContent = '';
+                    loginForm.reset();
+                }
+            });
+
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const username = usernameInput.value;
+                const password = passwordInput.value;
+
+                if (username === 'ADM' && password === '123') {
+                    alert('Login bem-sucedido! Bem-vindo, Administrador.');
+                    localStorage.setItem('isAdminLoggedIn', 'true'); // Marca o usuário como logado
+                    loginModal.style.display = 'none';
+                    mainContent.style.display = 'none'; // Esconde o painel normal
+                    adminPanel.style.display = 'block'; // Mostra o painel de administração
+                    renderAdminOptionsList(); // Garante que a lista de admin esteja atualizada
+                    updatePanelTitle(); // Garante que o título na admin esteja atualizado
+                } else {
+                    loginError.textContent = 'Usuário ou senha inválidos.';
+                }
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('isAdminLoggedIn'); // Remove o status de login
+                mainContent.style.display = 'block'; // Mostra o painel normal
+                adminPanel.style.display = 'none'; // Esconde o painel de administração
+                renderDashboardOptions(); // Redesenha as opções para o usuário comum
+            });
+
+            // Verificar status de login ao carregar a página
+            if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+                mainContent.style.display = 'none';
+                adminPanel.style.display = 'block';
+            } else {
+                mainContent.style.display = 'block';
+                adminPanel.style.display = 'none';
+            }
+
+            addOptionForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const name = optionNameInput.value.trim();
+                const link = optionLinkInput.value.trim();
+                const color = optionColorInput.value;
+                const description = optionDescriptionInput.value.trim();
+
+                if (name && link) {
+                    const newOption = {
+                        id: Date.now(), // ID único
+                        name,
+                        link,
+                        color,
+                        description
+                    };
+                    panelState.options.push(newOption);
+                    savePanelState();
+                    addOptionForm.reset();
+                    optionColorInput.value = '#e0e8f0'; // Resetar cor para padrão
+                } else {
+                    alert('Por favor, preencha o nome e o link da opção.');
+                }
+            });
+
+            currentOptionsList.addEventListener('click', (event) => {
+                const target = event.target;
+                const listItem = target.closest('li');
+                if (!listItem) return;
+
+                const optionId = parseInt(listItem.dataset.id);
+
+                if (target.classList.contains('remove-btn')) {
+                    if (confirm('Tem certeza que deseja remover esta opção?')) {
+                        panelState.options = panelState.options.filter(option => option.id !== optionId);
+                        savePanelState();
+                    }
+                } else if (target.classList.contains('edit-btn')) {
+                    const optionToEdit = panelState.options.find(option => option.id === optionId);
+                    if (optionToEdit) {
+                        const newName = prompt('Novo nome para a opção:', optionToEdit.name);
+                        if (newName !== null) { 
+                            optionToEdit.name = newName.trim();
+                        }
+
+                        const newLink = prompt('Novo link (URL) para a opção:', optionToEdit.link);
+                        if (newLink !== null) {
+                            optionToEdit.link = newLink.trim();
+                        }
+
+                        const newColor = prompt('Nova cor (Hex ou nome) para a opção:', optionToEdit.color);
+                        if (newColor !== null) {
+                            // Validar se é uma cor hexadecimal ou nome de cor CSS válido.
+                            const isValidColor = CSS.supports('color', newColor) || /^#([0-9A-F]{3}){1,2}$/i.test(newColor);
+                            if (isValidColor) {
+                                optionToEdit.color = newColor.trim();
+                            } else {
+                                alert('Cor inválida. Por favor, insira um código hexadecimal (#RRGGBB) ou um nome de cor CSS válido.');
+                            }
+                        }
+
+                        const newDescription = prompt('Nova descrição para a opção:', optionToEdit.description);
+                        if (newDescription !== null) {
+                            optionToEdit.description = newDescription.trim();
+                        }
+                        
+                        savePanelState();
+                    }
+                }
+            });
+
+            saveTitleBtn.addEventListener('click', () => {
+                const newTitle = panelMainTitleInput.value.trim();
+                if (newTitle) {
+                    panelState.title = newTitle;
+                    savePanelState();
+                    alert('Título salvo com sucesso!');
+                } else {
+                    alert('O título não pode estar vazio.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
