@@ -10,10 +10,11 @@
         body {
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 20px; /* Padding padrão */
             background-color: #f4f7f6;
             color: #333;
             line-height: 1.6;
+            box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura total */
         }
         .container {
             max-width: 900px;
@@ -81,7 +82,7 @@
         input[type="number"],
         textarea,
         select {
-            width: calc(100% - 20px);
+            width: 100%; /* Garante que ocupe a largura total disponível */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -106,7 +107,7 @@
         .radio-group, .checkbox-group {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Permite que os itens quebrem linha */
         }
         .radio-group label, .checkbox-group label {
             margin-right: 20px;
@@ -177,11 +178,13 @@
         /* Specific alignment for time inputs */
         .time-inputs {
             display: flex;
+            flex-wrap: wrap; /* Adiciona quebra de linha para inputs de hora em telas pequenas */
             align-items: center;
             gap: 10px;
         }
         .time-inputs input {
-            width: 120px; /* Adjust width as needed */
+            width: calc(50% - 15px); /* Ajusta a largura para dois campos por linha em telas pequenas */
+            min-width: 120px; /* Garante que não fique muito pequeno */
         }
         
         /* New styles for PDF button and messages */
@@ -192,7 +195,7 @@
             border-top: 1px solid #eee;
         }
         .pdf-controls button {
-            background-color: #28a745; /* Bootstrap-like green */
+            background-color: #28a745;
             color: white;
             padding: 12px 25px;
             border: none;
@@ -201,6 +204,8 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Ocupa a largura total em telas pequenas */
+            max-width: 300px; /* Limita a largura em telas maiores */
         }
         .pdf-controls button:hover {
             background-color: #218838;
@@ -210,15 +215,16 @@
         .pdf-controls #successMessage {
             margin-top: 15px;
             font-weight: 600;
+            word-break: break-word; /* Garante que mensagens longas quebrem linha */
         }
         .pdf-controls #loadingMessage {
-            color: #007bff; /* Blue */
+            color: #007bff;
         }
         .pdf-controls #pdfErrorMessage {
-            color: #dc3545; /* Red */
+            color: #dc3545;
         }
         .pdf-controls #successMessage {
-            color: #28a745; /* Green */
+            color: #28a745;
         }
 
         /* Message Box styles */
@@ -241,7 +247,8 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             text-align: center;
             max-width: 400px;
-            width: 90%;
+            width: 90%; /* Ajusta para telas pequenas */
+            box-sizing: border-box;
         }
         .message-box p {
             font-size: 1.1em;
@@ -275,6 +282,61 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px; /* Reduz o padding do corpo em telas menores */
+            }
+            .container {
+                margin: 10px auto;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+            h3 {
+                font-size: 1.1em;
+            }
+            .field-group {
+                grid-template-columns: 1fr; /* Coloca os campos em uma única coluna em telas menores */
+                gap: 15px;
+            }
+            .signature-line {
+                width: 80%; /* Aumenta a largura da linha de assinatura em telas pequenas */
+            }
+            .time-inputs input {
+                width: 100%; /* Ocupa a largura total para cada campo de hora em telas pequenas */
+            }
+            .pdf-controls button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            h2 {
+                font-size: 1.2em;
+            }
+            h3 {
+                font-size: 1em;
+            }
+            .logo-container img {
+                max-width: 180px; /* Ajusta ainda mais para telas muito pequenas */
+            }
+        }
     </style>
 </head>
 <body>
@@ -289,270 +351,291 @@
     <div class="container">
         <!-- Add an ID to the main content wrapper for PDF generation -->
         <div id="contract-content">
-            <!-- Logo added here -->
-            <div class="logo-container">
-                <img src="slogan espaço Comemore jpeg.jpg" alt="Logo Buffet Espaço Comemore" onerror="this.onerror=null;this.src='https://placehold.co/250x100/A0A0A0/FFFFFF?text=Logo+Aqui';">
-            </div>
+            <!-- Page 1 Content: Contratado e Contratante -->
+            <div id="pdf-page-1">
+                <!-- Logo and Main Title -->
+                <div class="logo-container">
+                    <img src="slogan espaço Comemore jpeg.jpg-7e929b14-c6d1-4536-ba8a-cafe379181ba" alt="Logo Buffet Espaço Comemore" onerror="this.onerror=null;this.src='https://placehold.co/250x100/A0A0A0/FFFFFF?text=Logo+Aqui';">
+                </div>
+                <h1>CONTRATO DE PRESTAÇÃO DE SERVIÇO DE ESPAÇO PARA EVENTOS PARTICULARES</h1>
 
-            <h1>CONTRATO DE PRESTAÇÃO DE SERVIÇO DE ESPAÇO PARA EVENTOS PARTICULARES</h1>
-
-            <div class="section">
-                <h2>CONTRATADO</h2>
-                <div class="field-group">
-                    <div class="field">
-                        <label>NOME:</label>
-                        <div class="read-only-field">LEANDRO RUY BATISTA DA SILVA</div>
+                <!-- Seção: Contratado -->
+                <div class="section">
+                    <h2>CONTRATADO</h2>
+                    <div class="field-group">
+                        <div class="field">
+                            <label>NOME:</label>
+                            <div class="read-only-field">LEANDRO RUY BATISTA DA SILVA</div>
+                        </div>
+                        <div class="field">
+                            <label>LOCAL:</label>
+                            <div class="read-only-field">BUFFET ESPAÇO COMEMORE FESTAS E EVENTOS.</div>
+                        </div>
                     </div>
-                    <div class="field">
-                        <label>LOCAL:</label>
-                        <div class="read-only-field">BUFFET ESPAÇO COMEMORE FESTAS E EVENTOS.</div>
+                    <div class="field-group">
+                        <div class="field">
+                            <label>ENDEREÇO:</label>
+                            <div class="read-only-field">RUA ISAURA PARENTE, ESQ., COM A RUA VENEZA, N° 100. (RUA DA PISTA DE TESTE DO DETRAN).</div>
+                        </div>
+                        <div class="field">
+                            <label>CIDADE:</label>
+                            <div class="read-only-field">RIO BRANCO – AC / CEP: 69918-210</div>
+                        </div>
                     </div>
-                </div>
-                <div class="field-group">
-                    <div class="field">
-                        <label>ENDEREÇO:</label>
-                        <div class="read-only-field">RUA ISAURA PARENTE, ESQ., COM A RUA VENEZA, N° 100. (RUA DA PISTA DE TESTE DO DETRAN).</div>
-                    </div>
-                    <div class="field">
-                        <label>CIDADE:</label>
-                        <div class="read-only-field">RIO BRANCO – AC / CEP: 69918-210</div>
-                    </div>
-                </div>
-                <div class="field-group">
-                    <div class="field">
-                        <label>CPF:</label>
-                        <div class="read-only-field">682.459.552-72</div>
-                    </div>
-                    <div class="field">
-                        <label>TELEFONE:</label>
-                        <div class="read-only-field">(68) 9.99217686 / 9.92414341</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>CONTRATANTE</h2>
-                <div class="field-group">
-                    <div class="field">
-                        <label for="contratante_nome">NOME:</label>
-                        <input type="text" id="contratante_nome" name="contratante_nome" placeholder="Nome Completo">
-                    </div>
-                    <div class="field">
-                        <label for="contratante_cpf">CPF:</label>
-                        <input type="text" id="contratante_cpf" name="contratante_cpf" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="___ . ___ . ___ - __">
-                    </div>
-                </div>
-                <div class="field-group">
-                    <div class="field">
-                        <label for="contratante_telefone">TELEFONE:</label>
-                        <input type="text" id="contratante_telefone" name="contratante_telefone" pattern="\(\d{2}\)\s?\d{4,5}-\d{4}" placeholder="(XX) X.XXXX-XXXX">
-                    </div>
-                    <div class="field">
-                        <label for="motivo_evento">MOTIVO DO EVENTO:</label>
-                        <input type="text" id="motivo_evento" name="motivo_evento" placeholder="Ex: Aniversário, Casamento">
-                    </div>
-                </div>
-                <div class="field-group">
-                    <div class="field">
-                        <label for="contratante_endereco">ENDEREÇO:</label>
-                        <input type="text" id="contratante_endereco" name="contratante_endereco" placeholder="Rua, Número, Bairro">
-                    </div>
-                    <div class="field">
-                        <label for="obs">OBSERVAÇÕES:</label>
-                        <textarea id="obs" name="obs" placeholder="Observações adicionais..."></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>OBJETIVO DO CONTRATO E DETALHES DO EVENTO</h2>
-                <p>Prestação de serviço de um ESPAÇO na casa do CONTRATADO com Termo de Consentimento Livre e Esclarecido Pandemia COVID -19 , através da utilização de um espaço para festa particular por tempo limitado conforme especificação abaixo:</p>
-                <div class="field-group">
-                    <div class="field">
-                        <label for="data_utilizacao">DATA DA UTILIZAÇÃO:</label>
-                        <input type="date" id="data_utilizacao" name="data_utilizacao">
-                    </div>
-                    <div class="field">
-                        <label>TIPO DE EVENTO:</label>
-                        <div class="radio-group">
-                            <input type="radio" id="tipo_evento_diurno" name="tipo_evento" value="diurno" checked> <label for="tipo_evento_diurno">Diurno</label>
-                            <input type="radio" id="tipo_evento_noturno" name="tipo_evento" value="noturno"> <label for="tipo_evento_noturno">Noturno</label>
+                    <div class="field-group">
+                        <div class="field">
+                            <label>CPF:</label>
+                            <div class="read-only-field">682.459.552-72</div>
+                        </div>
+                        <div class="field">
+                            <label>TELEFONE:</label>
+                            <div class="read-only-field">(68) 9.99217686 / 9.92414341</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="field-group">
-                    <div class="field">
-                        <label>HORÁRIO DE UTILIZAÇÃO:</label>
-                        <div class="time-inputs">
-                            <input type="time" id="horario_inicio" name="horario_inicio"> até
-                            <input type="time" id="horario_fim" name="horario_fim">
+                <!-- Seção: Contratante -->
+                <div class="section">
+                    <h2>CONTRATANTE</h2>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="contratante_nome">NOME:</label>
+                            <input type="text" id="contratante_nome" name="contratante_nome" placeholder="Nome Completo">
                         </div>
-                        <span id="horario_info" class="info-message"></span>
-                        <span id="horario_error" class="error-message"></span>
-                    </div>
-                </div>
-                <div class="info-message">
-                    <p><strong>Horários de Entrega/Decoração:</strong></p>
-                    <ul>
-                        <li>Para eventos diurnos, a entrega de bebidas/decoração pode ser realizada entre 07:00 e 09:00.</li>
-                        <li>Para eventos noturnos, a entrega de bebidas/decoração pode ser realizada entre 14:00 e 15:00.</li>
-                    </ul>
-                </div>
-                <div class="field-group">
-                    <div class="field">
-                        <label>QUANTIDADE DE MESAS INCLUSAS:</label>
-                        <div class="read-only-field">10 (fixas)</div>
-                    </div>
-                    <div class="field">
-                        <label for="mesas_extras">CADEIRAS EXTRAS (R$10 por cadeira):</label>
-                        <input type="number" id="mesas_extras" name="mesas_extras" min="0" value="0">
-                        <span id="valor_mesas_extras_display" class="info-message"></span>
-                    </div>
-                </div>
-
-                <div class="field-group">
-                    <div class="field">
-                        <label>VALOR DO ESPAÇO:</label>
-                        <span id="valor_espaco_display" class="price">R$ 0,00</span>
-                    </div>
-                    <div class="field">
-                        <label>UTILIZAÇÃO DA PISCINA:</label>
-                        <div class="radio-group">
-                            <input type="radio" id="utilizacao_piscina_sim" name="utilizacao_piscina" value="sim"> <label for="utilizacao_piscina_sim">SIM</label>
-                            <input type="radio" id="utilizacao_piscina_nao" name="utilizacao_piscina" value="nao" checked> <label for="utilizacao_piscina_nao">NÃO</label>
+                        <div class="field">
+                            <label for="contratante_cpf">CPF:</label>
+                            <input type="text" id="contratante_cpf" name="contratante_cpf" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="___ . ___ . ___ - __">
                         </div>
-                        <span id="adicional_piscina_display" class="price"></span>
                     </div>
-                </div>
-
-                <div class="field-group">
-                    <div class="field">
-                        <label>ADICIONAR PULA PULA (R$90/diária):</label>
-                        <div class="radio-group">
-                            <input type="radio" id="adicionar_pula_pula_sim" name="adicionar_pula_pula" value="sim"> <label for="adicionar_pula_pula_sim">SIM</label>
-                            <input type="radio" id="adicionar_pula_pula_nao" name="adicionar_pula_pula" value="nao" checked> <label for="adicionar_pula_pula_nao">NÃO</label>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="contratante_telefone">TELEFONE:</label>
+                            <input type="text" id="contratante_telefone" name="contratante_telefone" pattern="\(\d{2}\)\s?\d{4,5}-\d{4}" placeholder="(XX) X.XXXX-XXXX">
                         </div>
-                        <span id="valor_pula_pula_display" class="info-message"></span>
-                    </div>
-                    <div class="field">
-                        <label>ADICIONAR PISCINA DE BOLINHA (R$90/diária):</label>
-                        <div class="radio-group">
-                            <input type="radio" id="adicionar_piscina_bolinha_sim" name="adicionar_piscina_bolinha" value="sim"> <label for="adicionar_piscina_bolinha_sim">SIM</label>
-                            <input type="radio" id="adicionar_piscina_bolinha_nao" name="adicionar_piscina_bolinha" value="nao" checked> <label for="adicionar_piscina_bolinha_nao">NÃO</label>
+                        <div class="field">
+                            <label for="motivo_evento">MOTIVO DO EVENTO:</label>
+                            <input type="text" id="motivo_evento" name="motivo_evento" placeholder="Ex: Aniversário, Casamento">
                         </div>
-                        <span id="valor_piscina_bolinha_display" class="info-message"></span>
+                    </div>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="contratante_endereco">ENDEREÇO:</label>
+                            <input type="text" id="contratante_endereco" name="contratante_endereco" placeholder="Rua, Número, Bairro">
+                        </div>
+                        <div class="field">
+                            <label for="obs">OBSERVAÇÕES:</label>
+                            <textarea id="obs" name="obs" placeholder="Observações adicionais..."></textarea>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="field-group">
-                    <div class="field" style="grid-column: 1 / -1; text-align: right;">
-                        <label>VALOR TOTAL ESTIMADO:</label>
-                        <span id="valor_total_display" class="total-value">R$ 0,00</span>
+            </div> <!-- End pdf-page-1 -->
+
+            <!-- Page 2 Content: Objetivo e Pagamento -->
+            <div id="pdf-page-2">
+                <div class="section">
+                    <h2>OBJETIVO DO CONTRATO E DETALHES DO EVENTO</h2>
+                    <p>Prestação de serviço de um ESPAÇO na casa do CONTRATADO com Termo de Consentimento Livre e Esclarecido Pandemia COVID -19 , através da utilização de um espaço para festa particular por tempo limitado conforme especificação abaixo:</p>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="data_utilizacao">DATA DA UTILIZAÇÃO:</label>
+                            <input type="date" id="data_utilizacao" name="data_utilizacao">
+                        </div>
+                        <div class="field">
+                            <label>TIPO DE EVENTO:</label>
+                            <div class="radio-group">
+                                <input type="radio" id="tipo_evento_diurno" name="tipo_evento" value="diurno" checked> <label for="tipo_evento_diurno">Diurno</label>
+                                <input type="radio" id="tipo_evento_noturno" name="tipo_evento" value="noturno"> <label for="tipo_evento_noturno">Noturno</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <label>HORÁRIO DE UTILIZAÇÃO:</label>
+                            <div class="time-inputs">
+                                <input type="time" id="horario_inicio" name="horario_inicio"> até
+                                <input type="time" id="horario_fim" name="horario_fim">
+                            </div>
+                            <span id="horario_info" class="info-message"></span>
+                            <span id="horario_error" class="error-message"></span>
+                        </div>
+                    </div>
+                    <div class="info-message">
+                        <p><strong>Horários de Entrega/Decoração:</strong></p>
+                        <ul>
+                            <li>Para eventos diurnos, a entrega de bebidas/decoração pode ser realizada entre 07:00 e 09:00.</li>
+                            <li>Para eventos noturnos, a entrega de bebidas/decoração pode ser realizada entre 14:00 e 15:00.</li>
+                        </ul>
+                    </div>
+                    <div class="field-group">
+                        <div class="field">
+                            <label>QUANTIDADE DE MESAS INCLUSAS:</label>
+                            <div class="read-only-field">10 (fixas)</div>
+                        </div>
+                        <div class="field">
+                            <label for="mesas_extras">CADEIRAS EXTRAS (R$10 por cadeira):</label>
+                            <input type="number" id="mesas_extras" name="mesas_extras" min="0" value="0">
+                            <span id="valor_mesas_extras_display" class="info-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <label>VALOR DO ESPAÇO:</label>
+                            <span id="valor_espaco_display" class="price">R$ 0,00</span>
+                        </div>
+                        <div class="field">
+                            <label>UTILIZAÇÃO DA PISCINA:</label>
+                            <div class="radio-group">
+                                <input type="radio" id="utilizacao_piscina_sim" name="utilizacao_piscina" value="sim"> <label for="utilizacao_piscina_sim">SIM</label>
+                                <input type="radio" id="utilizacao_piscina_nao" name="utilizacao_piscina" value="nao" checked> <label for="utilizacao_piscina_nao">NÃO</label>
+                            </div>
+                            <span id="adicional_piscina_display" class="price"></span>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <label>ADICIONAR PULA PULA (R$90/diária):</label>
+                            <div class="radio-group">
+                                <input type="radio" id="adicionar_pula_pula_sim" name="adicionar_pula_pula" value="sim"> <label for="adicionar_pula_pula_sim">SIM</label>
+                                <input type="radio" id="adicionar_pula_pula_nao" name="adicionar_pula_pula" value="nao" checked> <label for="adicionar_pula_pula_nao">NÃO</label>
+                            </div>
+                            <span id="valor_pula_pula_display" class="info-message"></span>
+                        </div>
+                        <div class="field">
+                            <label>ADICIONAR PISCINA DE BOLINHA (R$90/diária):</label>
+                            <div class="radio-group">
+                                <input type="radio" id="adicionar_piscina_bolinha_sim" name="adicionar_piscina_bolinha" value="sim"> <label for="adicionar_piscina_bolinha_sim">SIM</label>
+                                <input type="radio" id="adicionar_piscina_bolinha_nao" name="adicionar_piscina_bolinha" value="nao" checked> <label for="adicionar_piscina_bolinha_nao">NÃO</label>
+                            </div>
+                            <span id="valor_piscina_bolinha_display" class="info-message"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <div class="field" style="grid-column: 1 / -1; text-align: right;">
+                            <label>VALOR TOTAL ESTIMADO:</label>
+                            <span id="valor_total_display" class="total-value">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <h3>FORMA DE PAGAMENTO</h3>
+                    <div class="field-group">
+                        <div class="field">
+                            <label>ENTRADA (50% do valor total):</label>
+                            <div class="read-only-field">Data: <span id="entrada_data_display"></span> | R$ <span id="entrada_valor_display"></span></div>
+                        </div>
+                        <div class="field">
+                            <label>RESTANTE (50% do valor total - no dia do evento):</label>
+                            <div class="read-only-field">Data: <span id="restante_data_display"></span> | R$ <span id="restante_valor_display"></span></div>
+                        </div>
+                        <div class="field">
+                            <label>À VISTA (100% do valor total - no dia do evento):</label>
+                            <div class="read-only-field">Data: <span id="a_vista_data_display"></span> | R$ <span id="a_vista_valor_display"></span></div>
+                        </div>
                     </div>
                 </div>
 
-                <h3>FORMA DE PAGAMENTO</h3>
-                <div class="field-group">
-                    <div class="field">
-                        <label>ENTRADA (50% do valor total):</label>
-                        <div class="read-only-field">Data: <span id="entrada_data_display"></span> | R$ <span id="entrada_valor_display"></span></div>
-                    </div>
-                    <div class="field">
-                        <label>RESTANTE (50% do valor total - no dia do evento):</label>
-                        <div class="read-only-field">Data: <span id="restante_data_display"></span> | R$ <span id="restante_valor_display"></span></div>
-                    </div>
-                    <div class="field">
-                        <label>À VISTA (100% do valor total - no dia do evento):</label>
-                        <div class="read-only-field">Data: <span id="a_vista_data_display"></span> | R$ <span id="a_vista_valor_display"></span></div>
+                <div class="section">
+                    <h2>ITENS ADICIONAIS AO CONTRATO:</h2>
+                    <textarea style="width: calc(100% - 20px);" name="itens_adicionais" placeholder="Descreva aqui quaisquer itens adicionais acordados..."></textarea>
+                </div>
+            </div> <!-- End pdf-page-2 -->
+
+            <!-- Page 3 Content: Funcionamento e Espaço Será Utilizado -->
+            <div id="pdf-page-3">
+                <div class="section">
+                    <h2>FUNCIONAMENTO DO ESPAÇO PARTICULAR:</h2>
+                    <p>O Espaço deve ser utilizado no período estabelecido no item "DETALHES DO EVENTO" acima para festa particular na casa do CONTRATADO.</p>
+                    <p>O Espaço deve ser utilizado nas horas definidas neste contrato e após este horário deverá entregar-se imediatamente as chaves e controles em perfeito estado ao CONTRATADO ou a pessoa indicada pelo mesmo.</p>
+                    <p>O Espaço deve ser utilizado conforme acordado, com a utilização da piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não, cabendo colocar a capa na piscina(<input type="checkbox">) sim ou (<input type="checkbox">) não. Deve-se cumprir o que foi acordado e zelar pelo bom uso do mesmo.</p>
+                    <p>- O Espaço deve ser utilizado pelo CONTRATANTE, sendo o espaço individual e intransferível, não podendo o mesmo ser utilizado para festas coletivas por pessoa pagantes.</p>
+                    <p>O Espaço deve ser entregue diretamente ao CONTRATANTE, cabendo a este cumprir o horário estabelecido para buscar as chaves do espaço, que se dará na data <input type="date" style="width: auto; display: inline-block;">, às <input type="time" style="width: auto; display: inline- FIM DA SELEÇÃO
+block;"> horas.</p>
+                    <h3>O ESPAÇO SERÁ UTILIZADO:</h3>
+                    <p>Com a assinatura deste contrato, objeto do presente instrumento, o cliente terá direito ao uso do espaço completo para festas, contendo <span class="read-only-field" style="display: inline-block; padding: 5px 10px;">10</span> mesas, um freezer, fogão industrial, com gás(<input type="checkbox">) ou sem gás (<input type="checkbox">), utilização da piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não, cabendo colocar a capa na piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não.</p>
+                    <p>Será permitido ser servido comida e bebida no espaço, não sendo permitido de forma alguma a sua utilização no interior da piscina, e qualquer tipo de fogos auditivos e pirotécnicos no espaço, ou qualquer tipo de fogo que possa causar algum risco às pessoas que estejam no ambiente ou até mesmo danos ao ambiente.</p>
+                    <p>Será permitido o uso de decoração, desde que não cause estragos nas paredes e estrutura, devendo ser totalmente retirada no final do evento.</p>
+                    <p>Qualquer dano causado deverá ser ressarcido.</p>
+                    <p class="disclaimer">O horário de disponibilidade do espaço deverá ser rigorosamente cumprido, nos termos do item "DETALHES DO EVENTO" supra, sendo que em caso de atraso na devolução acarretará na cobrança de multa no valor correspondente 1/3 do valor por hora, não ultrapassando mais de 2 horas de atraso, sob pena de acionamento policial para retirada.</p>
+                </div>
+            </div> <!-- End pdf-page-3 -->
+
+            <!-- Page 4 Content: Obrigações do Contratado e do Contratante -->
+            <div id="pdf-page-4">
+                <div class="section">
+                    <h2>DAS OBRIGAÇÕES DO CONTRATADO:</h2>
+                    <p>O CONTRATADO se obriga a ceder o espaço para uso da festa no período estabelecido no item "DETALHES DO EVENTO", todo limpo, com banheiro completo com papel higiênico, papel toalha e sabonete líquido, a piscina limpa, churrasqueira limpa e pias em general limpas, freezer já ligada, e chaves dos ambientes.</p>
+                    <p>O CONTRATADO não se responsabiliza nem internamente e externamente, pela segurança do ambiente, sendo de total responsabilidade do CONTRATANTE, sendo que o CONTRATADO, dispõe de segurança do ambiente com valores acordados.</p>
+                    <p>O CONTRATADO não se responsabiliza pela guarda das crianças e adolescentes convidados, devendo os mesmos estarem acompanhados dos pais e responsáveis, inclusive ao redor da piscina e ao adentrar na piscina.</p>
+                    <p>Fica estabelecido neste instrumento de contrato que o CONTRATADO é somente responsável pela entrega no ambiente limpo ao CONTRATANTE de acordo com os recursos disponíveis no seu estabelecimento.</p>
+                </div>
+
+                <div class="section">
+                    <h2>DAS OBRIGAÇÕES DO CONTRATANTE:</h2>
+                    <p>As crianças e adolescentes deverão estar acompanhadas dos pais ou responsáveis, cabendo à CONTRATANTE a guarda e cuidados dos menores.</p>
+                    <p>O valor cobrado pelo espaço deverá ser dado uma entrada de 50% no ato da reserva e mais 50% até 5 dias antes do evento, através de moeda corrente nacional.</p>
+                    <p>Não será aceito como pagamento o recebimento de cheques à vista ou pós-datado, de acordo com o Art. 5°, II da CF/88.</p>
+                    <p>A CONTRATANTE é responsável por orientar os decoradores ou demais fornecedores contratados para não utilizarem grampos, adesivos e colas que danifiquem as paredes, bem como ficará responsável por toda parte interna do espaço: banheiros, pintura, churrasqueira, fogão, piso em general, teto e ou lona decorativa, sob pena de arcarem com os prejuízos causados.</p>
+                    <p>É de obrigação do CONTRATANTE estar pontualmente no horário determinado no contrato, para buscar as chaves do espaço, visto que não havendo atrasos e ou retrocessos no horário contratado.</p>
+                </div>
+            </div> <!-- End pdf-page-4 -->
+
+            <!-- Page 5 Content: Cancelamento/Alteração e Informações Gerais -->
+            <div id="pdf-page-5">
+                <div class="section">
+                    <h2>CANCELAMENTO OU ALTERAÇÃO DE DATA:</h2>
+                    <p>Caso o CONTRATANTE deseje efetuar o cancelamento ou alteração de data, somente poderá ser feito com prazo mínimo de 7 dias antes da data contratada para utilização do espaço, COM PAGAMENTO DE MULTA REFERENTE A 40% DO VALOR CONTRATADO, sendo consultada nova data, se houver disponibilidade e se encaixa no mesmo valor do CONTRATANTE.</p>
+                    <p>Se o CONTRATANTE quiser cancelar será devolvido o valor somente de 10% do valor já pago, o restante ficará como título de multa, no prazo de 15 dias após a sua solicitação.</p>
+                    <p>Caso a solicitação de cancelamento ou alteração se dê com menos de 7 dias, não caberá restituição dos valores pagos.</p>
+                    <p>Qualquer alteração na data ou horário agendado só poderá ser efetuada através da assinatura de um novo contrato.</p>
+                    <p>Qualquer alteração nas datas e horários inicialmente acordados está condicionada à disponibilidade de agenda do CONTRATADO.</p>
+                </div>
+
+                <div class="section">
+                    <h2>INFORMAÇÕES GERAIS:</h2>
+                    <p>O CONTRATANTE tem a ciência de que o espaço é uma área residencial, cabendo, se alguém procurar o proprietário, informar ao mesmo para ligar no número que se encontra no espaço, que seria a sua fácil localização.</p>
+                    <p>O CONTRATANTE deverá ter ciência, e será responsável quanto à utilização de som, que após às 22:00 horas, cabendo ao mesmo se informar sobre a sua utilização e altura adequada após este horário, pois se trata o local de uma área residencial.</p>
+                    <p>O CONTRATADO não se responsabiliza por perda ou objetos perdidos ou esquecidos no interior do espaço.</p>
+                    <p>O total de pessoas no espaço é de aproximadamente 120 (cento e vinte pessoas), o CONTRATADO não consente com pessoas a mais que este total.</p>
+                    <p>Na falta de energia, que compromete a realização do evento, o CONTRATADO não se responsabiliza por isso, pois não é culpa por parte deste CONTRATADO, não sendo ressarcido de maneira nenhuma o dinheiro de volta.</p>
+                    <p>Qualquer dano causado ao ambiente, deverá ser ressarcido.</p>
+                    <p class="disclaimer">As questões decorrentes deste contrato serão resolvidas mediante entendimentos entre as partes, ficando eleito, para o caso de insucesso, o FORO DA COMARCA DE RIO BRANCO/AC, para dirimi-las.</p>
+                    <p class="disclaimer">E por estarem justas e contratadas, as partes firmam o presente instrumento em 02 vias de igual teor e forma, para uma só finalidade.</p>
+                    <p>RIO BRANCO, AC <span id="data_contrato_final"></span>.</p>
+                </div>
+            </div> <!-- End pdf-page-5 -->
+
+            <!-- Page 6 Content: Termo de Consentimento e Assinatura -->
+            <div id="pdf-page-6">
+                <div class="section">
+                    <h2>Termo de Consentimento Livre e Esclarecido - Pandemia COVID-19</h2>
+                    <p>EU, <input type="text" style="width: 200px; display: inline-block;" id="nome_termo_consentimento" placeholder="Nome Completo">, CPF. <input type="text" style="width: 150px; display: inline-block;" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="___ . ___ . ___ - __" id="cpf_termo_consentimento">. fui devidamente esclarecido(a) pelo PROPRIETARIO, sobre a pandemia de COVID-19, também chamada de novo coronavírus, que estamos vivendo, bem como dos riscos a que estarei exposto em relação a isso.</p>
+                    <p>Estou informado e compreendi que durante o período de UTILIZAÇÃO DO ESPAÇO (antes, durante e após utilização) estarei exposto a eventuais contaminações pela COVID-19 por contato com qualquer pessoa portador do novo coronavírus, mesmo que assintomáticos e não sabedores de suas condições, e que isso poderá acarretar o desenvolvimento de sintomas variados com diferentes graus de gravidade.</p>
+                    <p>Desta forma, opto por continuar com a UTILIZAÇÃO DO ESPAÇO, uma vez que fui orientado(a) sobre as medidas de precaução e de prevenção, principalmente quanto à utilização de USO DE MÁSCARA, LAVAR AS MÃOS SEMPRE QUE POSSÍVEL, MANTER UMA DISTÂNCIA SEGURA E UTILIZAÇÃO DE ÁLCOOL 70% EM GEL.</p>
+                    <p>Assim sendo, DECLARO que fui orientado, pela própria mídia, pelas redes sociais entre outras formas de informação em relação aos cuidados que devo tomar, principalmente quanto à higiene pessoal, alimentação, comportamento social, evitando aglomeração ou com fluxo intenso de pessoas.</p>
+                    <p>Ciente dos riscos e benefícios, bem como dirimidas todas as dúvidas, aceito realizar o evento.</p>
+                    <p>Rio Branco, <span id="dia_termo_consentimento" style="display: inline-block; width: 40px; text-align: center;"></span> de <span id="mes_termo_consentimento" style="display: inline-block; width: 80px; text-align: center;"></span> de <span id="ano_termo_consentimento" style="display: inline-block; width: 50px; text-align: center;"></span>.</p>
+
+                    <!-- Área de Assinatura movida para dentro da seção do termo de consentimento -->
+                    <div class="signature-area">
+                        <h3 style="margin-top:0;">TERMO DE ACEITE DO CONTRATANTE</h3>
+                        <div class="field-group" style="justify-content: center;">
+                            <div class="field checkbox-group" style="text-align: left; max-width: 600px; margin-bottom: 30px;">
+                                <input type="checkbox" id="agree_terms">
+                                <label for="agree_terms">
+                                    Ao marcar esta caixa, eu, o CONTRATANTE, declaro ter lido, compreendido e concordado com todos os termos e condições estabelecidos neste contrato, incluindo o Termo de Consentimento Livre e Esclarecido da Pandemia de COVID-19. Esta marcação serve como minha aceitação e assinatura digital do presente contrato.
+                                </label>
+                            </div>
+                        </div>
+                        <div class="signature-line"></div>
+                        <p>CONTRATADO</p>
+                        <p class="disclaimer">Rua Veneza. ESQ. Rua Isaura Parente, 100. (Rua da pista de teste do DETRAN). Fone/Whatsapp: (68) 99921.7686 – espacocomemoreacre@gmail.com</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="section">
-                <h2>ITENS ADICIONAIS AO CONTRATO:</h2>
-                <textarea style="width: calc(100% - 20px);" name="itens_adicionais" placeholder="Descreva aqui quaisquer itens adicionais acordados..."></textarea>
-            </div>
-
-            <div class="section">
-                <h2>FUNCIONAMENTO DO ESPAÇO PARTICULAR:</h2>
-                <p>O Espaço deve ser utilizado no período estabelecido no item "DETALHES DO EVENTO" acima para festa particular na casa do CONTRATADO.</p>
-                <p>O Espaço deve ser utilizado nas horas definidas neste contrato e após este horário deverá entregar-se imediatamente as chaves e controles em perfeito estado ao CONTRATADO ou a pessoa indicada pelo mesmo.</p>
-                <p>O Espaço deve ser utilizado conforme acordado, com a utilização da piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não, cabendo colocar a capa na piscina(<input type="checkbox">) sim ou (<input type="checkbox">) não. Deve-se cumprir o que foi acordado e zelar pelo bom uso do mesmo.</p>
-                <p>- O Espaço deve ser utilizado pelo CONTRATANTE, sendo o espaço individual e intransferível, não podendo o mesmo ser utilizado para festas coletivas por pessoa pagantes.</p>
-                <p>O Espaço deve ser entregue diretamente ao CONTRATANTE, cabendo a este cumprir o horário estabelecido para buscar as chaves do espaço, que se dará na data <input type="date" style="width: auto; display: inline-block;">, às <input type="time" style="width: auto; display: inline-block;"> horas.</p>
-                <h3>O ESPAÇO SERÁ UTILIZADO:</h3>
-                <p>Com a assinatura deste contrato, objeto do presente instrumento, o cliente terá direito ao uso do espaço completo para festas, contendo <span class="read-only-field" style="display: inline-block; padding: 5px 10px;">10</span> mesas, um freezer, fogão industrial, com gás(<input type="checkbox">) ou sem gás (<input type="checkbox">), utilização da piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não, cabendo colocar a capa na piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não.</p>
-                <p>Será permitido ser servido comida e bebida no espaço, não sendo permitido de forma alguma a sua utilização no interior da piscina, e qualquer tipo de fogos auditivos e pirotécnicos no espaço, ou qualquer tipo de fogo que possa causar algum risco às pessoas que estejam no ambiente ou até mesmo danos ao ambiente.</p>
-                <p>Será permitido o uso de decoração, desde que não cause estragos nas paredes e estrutura, devendo ser totalmente retirada no final do evento.</p>
-                <p>Qualquer dano causado deverá ser ressarcido.</p>
-                <p class="disclaimer">O horário de disponibilidade do espaço deverá ser rigorosamente cumprido, nos termos do item "DETALHES DO EVENTO" supra, sendo que em caso de atraso na devolução acarretará na cobrança de multa no valor correspondente 1/3 do valor por hora, não ultrapassando mais de 2 horas de atraso, sob pena de acionamento policial para retirada.</p>
-            </div>
-
-            <div class="section">
-                <h2>DAS OBRIGAÇÕES DO CONTRATADO:</h2>
-                <p>O CONTRATADO se obriga a ceder o espaço para uso da festa no período estabelecido no item "DETALHES DO EVENTO", todo limpo, com banheiro completo com papel higiênico, papel toalha e sabonete líquido, a piscina limpa, churrasqueira limpa e pias em general limpas, freezer já ligada, e chaves dos ambientes.</p>
-                <p>O CONTRATADO não se responsabiliza nem internamente e externamente, pela segurança do ambiente, sendo de total responsabilidade do CONTRATANTE, sendo que o CONTRATADO, dispõe de segurança do ambiente com valores acordados.</p>
-                <p>O CONTRATADO não se responsabiliza pela guarda das crianças e adolescentes convidados, devendo os mesmos estarem acompanhados dos pais e responsáveis, inclusive ao redor da piscina e ao adentrar na piscina.</p>
-                <p>Fica estabelecido neste instrumento de contrato que o CONTRATADO é somente responsável pela entrega no ambiente limpo ao CONTRATANTE de acordo com os recursos disponíveis no seu estabelecimento.</p>
-            </div>
-
-            <div class="section">
-                <h2>DAS OBRIGAÇÕES DO CONTRATANTE:</h2>
-                <p>As crianças e adolescentes deverão estar acompanhadas dos pais ou responsáveis, cabendo à CONTRATANTE a guarda e cuidados dos menores.</p>
-                <p>O valor cobrado pelo espaço deverá ser dado uma entrada de 50% no ato da reserva e mais 50% até 5 dias antes do evento, através de moeda corrente nacional.</p>
-                <p>Não será aceito como pagamento o recebimento de cheques à vista ou pós-datado, de acordo com o Art. 5°, II da CF/88.</p>
-                <p>A CONTRATANTE é responsável por orientar os decoradores ou demais fornecedores contratados para não utilizarem grampos, adesivos e colas que danifiquem as paredes, bem como ficará responsável por toda parte interna do espaço: banheiros, pintura, churrasqueira, fogão, piso em general, teto e ou lona decorativa, sob pena de arcarem com os prejuízos causados.</p>
-                <p>É de obrigação do CONTRATANTE estar pontualmente no horário determinado no contrato, para buscar as chaves do espaço, visto que não havendo atrasos e ou retrocessos no horário contratado.</p>
-            </div>
-
-            <div class="section">
-                <h2>CANCELAMENTO OU ALTERAÇÃO DE DATA:</h2>
-                <p>Caso o CONTRATANTE deseje efetuar o cancelamento ou alteração de data, somente poderá ser feito com prazo mínimo de 7 dias antes da data contratada para utilização do espaço, COM PAGAMENTO DE MULTA REFERENTE A 40% DO VALOR CONTRATADO, sendo consultada nova data, se houver disponibilidade e se encaixa no mesmo valor do CONTRATANTE.</p>
-                <p>Se o CONTRATANTE quiser cancelar será devolvido o valor somente de 10% do valor já pago, o restante ficará como título de multa, no prazo de 15 dias após a sua solicitação.</p>
-                <p>Caso a solicitação de cancelamento ou alteração se dê com menos de 7 dias, não caberá restituição dos valores pagos.</p>
-                <p>Qualquer alteração na data ou horário agendado só poderá ser efetuada através da assinatura de um novo contrato.</p>
-                <p>Qualquer alteração nas datas e horários inicialmente acordados está condicionada à disponibilidade de agenda do CONTRATADO.</p>
-            </div>
-
-            <div class="section">
-                <h2>INFORMAÇÕES GERAIS:</h2>
-                <p>O CONTRATANTE tem a ciência de que o espaço é uma área residencial, cabendo, se alguém procurar o proprietário, informar ao mesmo para ligar no número que se encontra no espaço, que seria a sua fácil localização.</p>
-                <p>O CONTRATANTE deverá ter ciência, e será responsável quanto à utilização de som, que após às 22:00 horas, cabendo ao mesmo se informar sobre a sua utilização e altura adequada após este horário, pois se trata o local de uma área residencial.</p>
-                <p>O CONTRATADO não se responsabiliza por perda ou objetos perdidos ou esquecidos no interior do espaço.</p>
-                <p>O total de pessoas no espaço é de aproximadamente 120 (cento e vinte pessoas), o CONTRATADO não consente com pessoas a mais que este total.</p>
-                <p>Na falta de energia, que compromete a realização do evento, o CONTRATADO não se responsabiliza por isso, pois não é culpa por parte deste CONTRATADO, não sendo ressarcido de maneira nenhuma o dinheiro de volta.</p>
-                <p>Qualquer dano causado ao ambiente, deverá ser ressarcido.</p>
-                <p class="disclaimer">As questões decorrentes deste contrato serão resolvidas mediante entendimentos entre as partes, ficando eleito, para o caso de insucesso, o FORO DA COMARCA DE RIO BRANCO/AC, para dirimi-las.</p>
-                <p class="disclaimer">E por estarem justas e contratadas, as partes firmam o presente instrumento em 02 vias de igual teor e forma, para uma só finalidade.</p>
-                <p>RIO BRANCO, AC <span id="data_contrato_final"></span>.</p>
-            </div>
-
-            <div class="section">
-                <h2>Termo de Consentimento Livre e Esclarecido - Pandemia COVID-19</h2>
-                <p>EU, <input type="text" style="width: 200px; display: inline-block;" id="nome_termo_consentimento" placeholder="Nome Completo">, CPF. <input type="text" style="width: 150px; display: inline-block;" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="___ . ___ . ___ - __" id="cpf_termo_consentimento">. fui devidamente esclarecido(a) pelo PROPRIETARIO, sobre a pandemia de COVID-19, também chamada de novo coronavírus, que estamos vivendo, bem como dos riscos a que estarei exposto em relação a isso.</p>
-                <p>Estou informado e compreendi que durante o período de UTILIZAÇÃO DO ESPAÇO (antes, durante e após utilização) estarei exposto a eventuais contaminações pela COVID-19 por contato com qualquer pessoa portador do novo coronavírus, mesmo que assintomáticos e não sabedores de suas condições, e que isso poderá acarretar o desenvolvimento de sintomas variados com diferentes graus de gravidade.</p>
-                <p>Desta forma, opto por continuar com a UTILIZAÇÃO DO ESPAÇO, uma vez que fui orientado(a) sobre as medidas de precaução e de prevenção, principalmente quanto à utilização de USO DE MÁSCARA, LAVAR AS MÃOS SEMPRE QUE POSSÍVEL, MANTER UMA DISTÂNCIA SEGURA E UTILIZAÇÃO DE ÁLCOOL 70% EM GEL.</p>
-                <p>Assim sendo, DECLARO que fui orientado, pela própria mídia, pelas redes sociais entre outras formas de informação em relação aos cuidados que devo tomar, principalmente quanto à higiene pessoal, alimentação, comportamento social, evitando aglomeração ou com fluxo intenso de pessoas.</p>
-                <p>Ciente dos riscos e benefícios, bem como dirimidas todas as dúvidas, aceito realizar o evento.</p>
-                <p>Rio Branco, <span id="dia_termo_consentimento" style="display: inline-block; width: 40px; text-align: center;"></span> de <span id="mes_termo_consentimento" style="display: inline-block; width: 80px; text-align: center;"></span> de <span id="ano_termo_consentimento" style="display: inline-block; width: 50px; text-align: center;"></span>.</p>
-            </div>
-
-            <div class="signature-area">
-                <h3 style="margin-top:0;">TERMO DE ACEITE DO CONTRATANTE</h3>
-                <div class="field-group" style="justify-content: center;">
-                    <div class="field checkbox-group" style="text-align: left; max-width: 600px; margin-bottom: 30px;">
-                        <input type="checkbox" id="agree_terms">
-                        <label for="agree_terms">
-                            Ao marcar esta caixa, eu, o CONTRATANTE, declaro ter lido, compreendido e concordado com todos os termos e condições estabelecidos neste contrato, incluindo o Termo de Consentimento Livre e Esclarecido da Pandemia de COVID-19. Esta marcação serve como minha aceitação e assinatura digital do presente contrato.
-                        </label>
-                    </div>
-                </div>
-                <div class="signature-line"></div>
-                <p>CONTRATADO</p>
-                <p class="disclaimer">Rua Veneza. ESQ. Rua Isaura Parente, 100. (Rua da pista de teste do DETRAN). Fone/Whatsapp: (68) 99921.7686 – espacocomemoreacre@gmail.com</p>
-            </div>
-        </div>
+            </div> <!-- End pdf-page-6 -->
+        </div> <!-- End contract-content -->
 
         <!-- Botão para gerar PDF e mensagens de feedback -->
         <div class="pdf-controls">
@@ -611,7 +694,7 @@
             const cpfTermoConsentimento = document.getElementById('cpf_termo_consentimento');
             const diaTermoConsentimento = document.getElementById('dia_termo_consentimento');
             const mesTermoConsentimento = document.getElementById('mes_termo_consentimento');
-            const anoTermoConsentimento = document.getElementById('ano_termo_consentimento');
+            const anoTermoConsentimento = document.getElementById('ano_termo_consentimento'); 
 
             // PDF generation elements - Declared once here
             const gerarPdfBtn = document.getElementById('gerarPdfBtn');
@@ -911,39 +994,68 @@
                 successMessage.style.display = 'none';
                 gerarPdfBtn.disabled = true; // Disable button during PDF generation
 
+                // Save original body styles
+                const originalBodyWidth = document.body.style.width;
+                const originalBodyOverflow = document.body.style.overflow;
+                const originalHtmlOverflow = document.documentElement.style.overflow;
+                const containerElement = document.querySelector('.container');
+                const originalContainerMaxWidth = containerElement ? containerElement.style.maxWidth : '';
+                const contractContentElement = document.getElementById('contract-content');
+                const originalContractContentWidth = contractContentElement ? contractContentElement.style.width : '';
+
+
                 try {
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'pt', 'a4'); // 'p' for portrait, 'pt' for points, 'a4' for A4 size
-
-                    const contractContent = document.getElementById('contract-content');
-
-                    // Use html2canvas to capture the content as an image
-                    const canvas = await html2canvas(contractContent, {
-                        scale: 2, // Increase scale for better PDF quality
-                        useCORS: true, // Important for images loaded from different origins
-                        logging: false, // Disable logs in console for production
-                    });
-
-                    const imgData = canvas.toDataURL('image/png');
                     const imgWidth = 595; // A4 width in points (approx. 210mm)
-                    const pageHeight = 842; // A4 height in points (approx. 297mm)
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 0;
+                    // const pageHeight = 842; // A4 height in points (approx. 297mm)
 
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                    const pageIds = [
+                        'pdf-page-1',
+                        'pdf-page-2',
+                        'pdf-page-3',
+                        'pdf-page-4',
+                        'pdf-page-5',
+                        'pdf-page-6'
+                    ];
 
-                    // Add new pages if content is larger than one A4 page
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
+                    // Temporarily set a fixed width for the body and prevent overflow to ensure desktop rendering
+                    document.body.style.width = '900px'; // A value that forces desktop layout
+                    document.body.style.overflow = 'visible'; // Prevent scrollbars from affecting capture
+                    document.documentElement.style.overflow = 'visible'; // For html element too
+                    if (containerElement) {
+                        containerElement.style.maxWidth = '900px'; // Ensure container adapts to this width
+                    }
+                    if (contractContentElement) {
+                        contractContentElement.style.width = '100%'; // Ensure content fills the container
                     }
 
+
+                    for (let i = 0; i < pageIds.length; i++) {
+                        const pageElement = document.getElementById(pageIds[i]);
+                        if (!pageElement) {
+                            console.error(`Element with ID ${pageIds[i]} not found.`);
+                            continue;
+                        }
+
+                        // Generate canvas for each page section
+                        const canvas = await html2canvas(pageElement, {
+                            scale: 2, // Increase scale for better PDF quality
+                            useCORS: true, // Important for images loaded from different origins
+                            logging: false, // Disable logs in console for production
+                        });
+
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                        if (i > 0) {
+                            pdf.addPage(); // Add a new page for subsequent sections
+                        }
+                        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                    }
+                    
                     // Format date for PDF filename
-                    const dataUtilizacao = dataUtilizacaoInput.value; // YYYY-MM-DD
+                    const dataUtilizacao = dataUtilizacaoInput.value; // Assume YYYY-MM-DD
                     let formattedDate = '';
                     if (dataUtilizacao) {
                         const dateParts = dataUtilizacao.split('-'); // ['YYYY', 'MM', 'DD']
@@ -979,8 +1091,19 @@
                     pdfErrorMessage.style.display = 'block';
                     showCustomMessageBox('Erro ao gerar o PDF. Por favor, tente novamente.');
                 } finally {
+                    // Always restore styles in finally block to ensure they are reset even on error
+                    document.body.style.width = originalBodyWidth;
+                    document.body.style.overflow = originalBodyOverflow;
+                    document.documentElement.style.overflow = originalHtmlOverflow;
+                    if (containerElement) {
+                        containerElement.style.maxWidth = originalContainerMaxWidth;
+                    }
+                    if (contractContentElement) {
+                        contractContentElement.style.width = originalContractContentWidth;
+                    }
+
                     loadingMessage.style.display = 'none';
-                    gerarPdfBtn.disabled = false; // Re-enable button
+                    gerarPdfBtn.disabled = false;
                 }
             });
 
