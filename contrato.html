@@ -473,7 +473,7 @@
                             <div class="read-only-field">10 (fixas)</div>
                         </div>
                         <div class="field">
-                            <label for="mesas_extras">CADEIRAS EXTRAS (R$10 por cadeira):</label>
+                            <label for="mesas_extras">MESAS EXTRAS (R$10 por mesa):</label>
                             <input type="number" id="mesas_extras" name="mesas_extras" min="0" value="0">
                             <span id="valor_mesas_extras_display" class="info-message"></span>
                         </div>
@@ -551,8 +551,7 @@
                     <p>O Espaço deve ser utilizado nas horas definidas neste contrato e após este horário deverá entregar-se imediatamente as chaves e controles em perfeito estado ao CONTRATADO ou a pessoa indicada pelo mesmo.</p>
                     <p>O Espaço deve ser utilizado conforme acordado, com a utilização da piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não, cabendo colocar a capa na piscina(<input type="checkbox">) sim ou (<input type="checkbox">) não. Deve-se cumprir o que foi acordado e zelar pelo bom uso do mesmo.</p>
                     <p>- O Espaço deve ser utilizado pelo CONTRATANTE, sendo o espaço individual e intransferível, não podendo o mesmo ser utilizado para festas coletivas por pessoa pagantes.</p>
-                    <p>O Espaço deve ser entregue diretamente ao CONTRATANTE, cabendo a este cumprir o horário estabelecido para buscar as chaves do espaço, que se dará na data <input type="date" style="width: auto; display: inline-block;">, às <input type="time" style="width: auto; display: inline- FIM DA SELEÇÃO
-block;"> horas.</p>
+                    <p>O Espaço deve ser entregue diretamente ao CONTRATANTE, cabendo a este cumprir o horário estabelecido para buscar as chaves do espaço, que se dará na data <input type="date" style="width: auto; display: inline-block;">, às <input type="time" style="width: auto; display: inline-block;"> horas.</p>
                     <h3>O ESPAÇO SERÁ UTILIZADO:</h3>
                     <p>Com a assinatura deste contrato, objeto do presente instrumento, o cliente terá direito ao uso do espaço completo para festas, contendo <span class="read-only-field" style="display: inline-block; padding: 5px 10px;">10</span> mesas, um freezer, fogão industrial, com gás(<input type="checkbox">) ou sem gás (<input type="checkbox">), utilização da piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não, cabendo colocar a capa na piscina (<input type="checkbox">) sim ou (<input type="checkbox">) não.</p>
                     <p>Será permitido ser servido comida e bebida no espaço, não sendo permitido de forma alguma a sua utilização no interior da piscina, e qualquer tipo de fogos auditivos e pirotécnicos no espaço, ou qualquer tipo de fogo que possa causar algum risco às pessoas que estejam no ambiente ou até mesmo danos ao ambiente.</p>
@@ -629,6 +628,10 @@ block;"> horas.</p>
                                 </label>
                             </div>
                         </div>
+                        
+                        <!-- Imagem da Assinatura do Contratado -->
+                        <img src="https://placehold.co/350x100/FFFFFF/000000?text=Assinatura+Contratado" alt="Assinatura do Contratado" style="display: block; margin: -35px auto 0; max-height: 100px;" onerror="this.onerror=null;this.src='https://placehold.co/350x100/EFEFEF/333333?text=Assinatura+Indisponível';">
+                        
                         <div class="signature-line"></div>
                         <p>CONTRATADO</p>
                         <p class="disclaimer">Rua Veneza. ESQ. Rua Isaura Parente, 100. (Rua da pista de teste do DETRAN). Fone/Whatsapp: (68) 99921.7686 – espacocomemoreacre@gmail.com</p>
@@ -702,7 +705,7 @@ block;"> horas.</p>
             const pdfErrorMessage = document.getElementById('pdfErrorMessage');
             const successMessage = document.getElementById('successMessage');
 
-            const VALOR_CADEIRA_EXTRA = 10;
+            const VALOR_MESA_EXTRA = 10;
             const VALOR_PULA_PULA = 90;
             const VALOR_PISCINA_BOLINHA = 90;
             const VALOR_ADICIONAL_PISCINA_FIXO = 150;
@@ -813,8 +816,8 @@ block;"> horas.</p>
                 total += valorEspaco;
 
                 const mesasExtras = parseInt(mesasExtrasInput.value) || 0;
-                const valorMesasExtras = mesasExtras * VALOR_CADEIRA_EXTRA;
-                valorMesasExtrasDisplay.textContent = mesasExtras > 0 ? `(${formatCurrency(valorMesasExtras)} por ${mesasExtras} cadeiras extras)` : '';
+                const valorMesasExtras = mesasExtras * VALOR_MESA_EXTRA;
+                valorMesasExtrasDisplay.textContent = mesasExtras > 0 ? `(${formatCurrency(valorMesasExtras)} por ${mesasExtras} mesas extras)` : '';
                 total += valorMesasExtras;
 
                 if (utilizacaoPiscinaSim.checked) {
@@ -891,13 +894,13 @@ block;"> horas.</p>
                             isValidTime = false;
                         }
 
-                        if (inicioMin < LIMIT_START_NOTURNO || effectiveFimMin > maxAllowedEndTimeMinutes) {
+                        if (isValidTime && (inicioMin < LIMIT_START_NOTURNO || effectiveFimMin > maxAllowedEndTimeMinutes)) {
                              horarioErrorSpan.textContent = `ERRO: Para eventos noturnos, o horário permitido é de 17:00h até ${maxAllowedEndTimeString}.`;
                             isValidTime = false;
-                        } else if (effectiveFimMin <= inicioMin) {
+                        } else if (isValidTime && effectiveFimMin <= inicioMin) {
                             horarioErrorSpan.textContent = 'ERRO: O horário de término deve ser posterior ao horário de início.';
                             isValidTime = false;
-                        } else {
+                        } else if(isValidTime) {
                             horarioInfoSpan.textContent = 'Horário noturno válido. Som ambiente após 22:00h.';
                         }
                     }
@@ -1055,7 +1058,7 @@ block;"> horas.</p>
                     }
                     
                     // Format date for PDF filename
-                    const dataUtilizacao = dataUtilizacaoInput.value; // Assume YYYY-MM-DD
+                    const dataUtilizacao = dataUtilizacaoInput.value; // Assume format YYYY-MM-DD
                     let formattedDate = '';
                     if (dataUtilizacao) {
                         const dateParts = dataUtilizacao.split('-'); // ['YYYY', 'MM', 'DD']
