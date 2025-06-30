@@ -484,7 +484,14 @@
                             <input type="radio" id="utilizacao_piscina_sim" name="utilizacao_piscina" value="sim"> <label for="utilizacao_piscina_sim">SIM</label>
                             <input type="radio" id="utilizacao_piscina_nao" name="utilizacao_piscina" value="nao" checked> <label for="utilizacao_piscina_nao">NÃO</label>
                         </div>
-                        <span id="adicional_piscina_display" class="price"></span>
+                        <div id="capa_piscina_options" style="display: none; margin-top: 10px;">
+                            <label>Opções da Capa:</label>
+                            <div class="radio-group">
+                               <input type="radio" id="com_capa" name="capa_piscina" value="com_capa" checked> <label for="com_capa">c/ capa da piscina</label>
+                               <input type="radio" id="sem_capa" name="capa_piscina" value="sem_capa"> <label for="sem_capa">s/ capa da piscina</label>
+                            </div>
+                       </div>
+                        <span id="adicional_piscina_display" class="info-message"></span>
                     </div>
                 </div>
 
@@ -653,6 +660,7 @@
             const utilizacaoPiscinaSim = document.getElementById('utilizacao_piscina_sim');
             const utilizacaoPiscinaNao = document.getElementById('utilizacao_piscina_nao');
             const adicionalPiscinaDisplay = document.getElementById('adicional_piscina_display');
+            const capaPiscinaOptions = document.getElementById('capa_piscina_options');
             const adicionarPulaPulaSim = document.getElementById('adicionar_pula_pula_sim');
             const adicionarPulaPulaNao = document.getElementById('adicionar_pula_pula_nao');
             const valorPulaPulaDisplay = document.getElementById('valor_pula_pula_display');
@@ -684,7 +692,6 @@
             const VALOR_MESA_EXTRA = 10;
             const VALOR_PULA_PULA = 90;
             const VALOR_PISCINA_BOLINHA = 90;
-            const VALOR_ADICIONAL_PISCINA_FIXO = 150;
             const VALOR_HORA_EXTRA_DIURNO = 50;
 
             const MESES = [
@@ -796,11 +803,13 @@
                 valorMesasExtrasDisplay.textContent = mesasExtras > 0 ? `(${formatCurrency(valorMesasExtras)} por ${mesasExtras} mesas extras)` : '';
                 total += valorMesasExtras;
 
+                // Pool usage is now free, just update the display text and toggle cover options
                 if (utilizacaoPiscinaSim.checked) {
-                    adicionalPiscinaDisplay.textContent = `(Adicional: ${formatCurrency(VALOR_ADICIONAL_PISCINA_FIXO)})`;
-                    total += VALOR_ADICIONAL_PISCINA_FIXO;
+                    adicionalPiscinaDisplay.textContent = '(Uso da piscina incluso)';
+                    capaPiscinaOptions.style.display = 'block';
                 } else {
                     adicionalPiscinaDisplay.textContent = '';
+                    capaPiscinaOptions.style.display = 'none';
                 }
 
                 if (adicionarPulaPulaSim.checked) {
@@ -967,76 +976,63 @@
             });
 
             // Handle PDF generation button click
-            gerarPdfBtn.addEventListener('click', async () => {
+            gerarPdfBtn.addEventListener('click', function () {
                 loadingMessage.style.display = 'block';
                 pdfErrorMessage.style.display = 'none';
                 successMessage.style.display = 'none';
                 gerarPdfBtn.disabled = true;
 
-                const contentToCapture = document.getElementById('contract-content');
+                const content = document.getElementById('contract-content');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'pt', 'a4');
 
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF({
-                        orientation: 'p',
-                        unit: 'pt',
-                        format: 'a4'
-                    });
+                // Read values from form BEFORE PDF generation starts
+                const dataUtilizacao = dataUtilizacaoInput.value;
+                let formattedDate = 'CONTRATO';
+                if (dataUtilizacao) {
+                    const dateParts = dataUtilizacao.split('-');
+                    if (dateParts.length === 3) {
+                        formattedDate = `${dateParts[2]}${dateParts[1]}${dateParts[0]}`;
+                    }
+                }
 
-                    const canvas = await html2canvas(contentToCapture, {
-                        scale: 2, // Higher scale for better quality
+                const tipoEventoEl = document.querySelector('input[name="tipo_evento"]:checked');
+                const tipoEvento = tipoEventoEl ? tipoEventoEl.value.toUpperCase() : 'EVENTO';
+                
+                let startHour = horarioInicioInput.value ? horarioInicioInput.value.split(':')[0] : '00';
+                let endHour = horarioFimInput.value ? horarioFimInput.value.split(':')[0] : '00';
+                
+                const filename = `${formattedDate}_${tipoEvento}_${startHour}-${endHour}.pdf`;
+
+                pdf.html(content, {
+                    callback: function(doc) {
+                        doc.save(filename);
+                        
+                        loadingMessage.style.display = 'none';
+                        gerarPdfBtn.disabled = false;
+                        successMessage.textContent = 'PDF gerado e salvo com sucesso!';
+                        successMessage.style.display = 'block';
+                        showCustomMessageBox('Contrato PDF gerado e salvo com sucesso!');
+                    },
+                    margin: [40, 40, 40, 40],
+                    autoPaging: 'text',
+                    x: 0,
+                    y: 0,
+                    width: 515, // A4 width in pt (595) - margins (40 * 2)
+                    windowWidth: content.scrollWidth,
+                    html2canvas: {
+                        scale: 2,
                         useCORS: true,
-                        logging: false,
-                        width: contentToCapture.scrollWidth,
-                        height: contentToCapture.scrollHeight
-                    });
-                    
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgProps = pdf.getImageProperties(imgData);
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                    let heightLeft = pdfHeight;
-                    let position = 0;
-
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    heightLeft -= pdf.internal.pageSize.getHeight();
-
-                    while (heightLeft > 0) {
-                        position = heightLeft - pdfHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-                        heightLeft -= pdf.internal.pageSize.getHeight();
+                        logging: false
                     }
-
-                    const dataUtilizacao = dataUtilizacaoInput.value;
-                    let formattedDate = '';
-                    if (dataUtilizacao) {
-                        const dateParts = dataUtilizacao.split('-');
-                        if (dateParts.length === 3) {
-                            formattedDate = `${dateParts[2]}${dateParts[1]}${dateParts[0]}`;
-                        }
-                    }
-
-                    const tipoEvento = document.querySelector('input[name="tipo_evento"]:checked').value.toUpperCase();
-                    let startHour = horarioInicioInput.value ? horarioInicioInput.value.split(':')[0] : '';
-                    let endHour = horarioFimInput.value ? horarioFimInput.value.split(':')[0] : '';
-                    const filename = `${formattedDate}_${tipoEvento}_${startHour}-${endHour}.pdf`;
-
-                    pdf.save(filename);
-
-                    successMessage.textContent = 'PDF gerado e salvo com sucesso!';
-                    successMessage.style.display = 'block';
-                    showCustomMessageBox('Contrato PDF gerado e salvo com sucesso!');
-
-                } catch (error) {
-                    console.error('Erro ao gerar PDF:', error);
-                    pdfErrorMessage.textContent = 'Erro ao gerar o PDF. Por favor, tente novamente. Detalhes: ' + error.message;
+                }).catch(err => {
+                    console.error('Erro ao gerar PDF:', err);
+                    pdfErrorMessage.textContent = 'Erro ao gerar o PDF. Por favor, tente novamente. Detalhes: ' + err.message;
                     pdfErrorMessage.style.display = 'block';
                     showCustomMessageBox('Erro ao gerar o PDF. Por favor, tente novamente.');
-                } finally {
                     loadingMessage.style.display = 'none';
                     gerarPdfBtn.disabled = false;
-                }
+                });
             });
 
             // Initial setup on page load
