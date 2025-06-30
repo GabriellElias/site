@@ -17,9 +17,22 @@
             --cor-texto-secundario: #666666;
             --cor-sucesso: #5cb85c;
             --cor-erro: #d9534f;
+            --cor-alerta: #ffc107; /* Amarelo para alerta */
             --cor-borda-bloco: #e0e0e0;
             --cor-sombra: rgba(0, 0, 0, 0.1);
             --cor-sombra-hover: rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes pulse-warning {
+            0% {
+                box-shadow: 0 0 0 0 rgba(224, 168, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(224, 168, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(224, 168, 0, 0);
+            }
         }
 
         body {
@@ -45,12 +58,71 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+            gap: 15px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex-grow: 1;
         }
 
         .top-header h1 {
             margin: 0;
             font-size: 1.9em;
             font-weight: 600;
+        }
+        
+        #countdown-container {
+            background-color: var(--cor-alerta);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9em;
+            border: 1px solid #e6a800;
+            animation: pulse-warning 2.5s infinite;
+        }
+
+        #countdown-container .countdown-title {
+            display: block;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 3px;
+            opacity: 0.9;
+        }
+
+        #countdown {
+            font-weight: 700;
+            font-size: 1.1em;
+            letter-spacing: 1.5px;
+            color: #000;
+        }
+
+        #countdown span {
+            margin: 0 3px;
+        }
+
+        .whatsapp-button-header {
+            background-color: #25D366;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .whatsapp-button-header:hover {
+            background-color: #1EBE57;
+            transform: scale(1.05);
         }
 
         #logoutButton {
@@ -352,6 +424,52 @@
             background-color: #4CAF50; /* Tom mais escuro no hover */
             transform: translateY(-2px);
         }
+        
+        /* Tela de Fim de Teste */
+        #trial-ended-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cor-primaria);
+            color: white;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .overlay-content h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .overlay-content p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .whatsapp-button {
+            background-color: #25D366; /* Cor do WhatsApp */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .whatsapp-button:hover {
+            background-color: #1EBE57;
+            transform: scale(1.05);
+        }
 
         /* Classes de Utilidade */
         .hidden {
@@ -380,6 +498,19 @@
         }
 
         /* Media Queries para Responsividade */
+        @media (max-width: 900px) {
+            .top-header {
+                justify-content: center;
+            }
+            .header-content {
+                justify-content: center;
+                width: 100%;
+            }
+             #logoutButton {
+                margin-top: 10px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .container {
                 flex-direction: column; /* Pilha verticalmente */
@@ -430,6 +561,8 @@
         @media (max-width: 480px) {
             .top-header h1 {
                 font-size: 1.5em;
+                width: 100%;
+                text-align: center;
             }
 
             #logoutButton {
@@ -471,8 +604,33 @@
     </style>
 </head>
 <body>
+    <div id="trial-ended-overlay" style="display: none;">
+        <div class="overlay-content">
+            <h1>Período de Teste Encerrado</h1>
+            <p>Para continuar utilizando nossos serviços, entre em contato.</p>
+            <a href="https://wa.me/5568992171233" class="whatsapp-button" target="_blank">Entrar em contato com o administrador</a>
+        </div>
+    </div>
+
     <header class="top-header">
-        <h1>Painel de Controle</h1>
+        <div class="header-content">
+            <h1>Painel de Controle</h1>
+            <div id="countdown-container">
+                <span class="countdown-title">Seu teste expira em:</span>
+                <div id="countdown">
+                    <span id="days">00</span>d
+                    <span id="hours">00</span>h
+                    <span id="minutes">00</span>m
+                    <span id="seconds">00</span>s
+                </div>
+            </div>
+            <a href="https://wa.me/5568992171233" class="whatsapp-button-header" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.1-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                </svg>
+                <span>entre em contato com o administrador</span>
+            </a>
+        </div>
         <button id="logoutButton" class="hidden">Sair</button>
     </header>
 
@@ -495,7 +653,7 @@
             </div>
 
             <!-- Modal de Login -->
-            <div id="loginModal" class="modal hidden">
+            <div id="loginModal" class="modal">
                 <div class="modal-content">
                     <span class="close-button">&times;</span>
                     <h2>Login</h2>
@@ -539,6 +697,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const trialOverlay = document.getElementById('trial-ended-overlay');
             const contentDisplay = document.getElementById('contentDisplay');
             const blocksContainer = document.getElementById('blocksContainer');
             const loginModal = document.getElementById('loginModal');
@@ -555,6 +714,29 @@
             const addBlockMessage = document.getElementById('addBlockMessage');
             const logoutButton = document.getElementById('logoutButton');
 
+            // --- Lógica do Contador ---
+            const countDownDate = new Date("Jul 5, 2025 00:00:00").getTime();
+            const countdownFunction = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countDownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                if (distance < 0) {
+                    clearInterval(countdownFunction);
+                    trialOverlay.style.display = 'flex';
+                } else {
+                    document.getElementById("days").innerText = String(days).padStart(2, '0');
+                    document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                    document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                    document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+                }
+            }, 1000);
+
+
             // Todos os blocos disponíveis, com indicação de visibilidade e link opcional
             let allBlocksData = [
                 { name: 'Contrato', function: 'Acesse o seu contrato de serviço.', color: '#4a90e2', link: 'contrato.html', visibility: 'all' },
@@ -568,6 +750,7 @@
 
             let dynamicallyAddedBlocks = []; // Blocos adicionados pelo ADM na sessão atual
             let currentUserRole = 'guest'; // Pode ser 'guest', 'adm', 'ruy'
+            let unsavedChanges = false; // Flag para alterações não salvas
 
             // --- Funções Principais ---
 
@@ -619,7 +802,7 @@
              * Exibe o modal de login.
              */
             function showLoginModal() {
-                loginModal.classList.remove('hidden'); // Mostra o modal
+                loginModal.style.display = 'flex'; // Mostra o modal usando flex
                 loginMessage.textContent = ''; // Limpa mensagens anteriores
                 usernameInput.value = '';
                 passwordInput.value = '';
@@ -630,7 +813,7 @@
              * Esconde o modal de login.
              */
             function hideLoginModal() {
-                loginModal.classList.add('hidden'); // Esconde o modal
+                loginModal.style.display = 'none'; // Esconde o modal
             }
 
             /**
@@ -749,7 +932,8 @@
             logoutButton.addEventListener('click', () => {
                 // A verificação de alterações não salvas só é relevante para o ADM
                 if (unsavedChanges && currentUserRole === 'adm') {
-                    const confirmLogout = window.confirm("Você tem alterações não salvas no painel de 'Adicionar Novo Bloco'. Deseja realmente sair sem salvar?");
+                    // Usando um modal customizado em vez de window.confirm
+                    const confirmLogout = confirm("Você tem alterações não salvas no painel de 'Adicionar Novo Bloco'. Deseja realmente sair sem salvar?");
                     if (!confirmLogout) {
                         return; // Interrompe o processo de logout se o usuário cancelar
                     }
@@ -759,10 +943,17 @@
                 addBlockForm.reset(); // Limpa os campos do formulário
                 addBlockMessage.textContent = ''; // Limpa a mensagem
                 dynamicallyAddedBlocks = []; // Limpa os blocos adicionados pelo ADM na sessão
+                renderBlocks(); // Re-renderiza os blocos para o modo guest
             });
 
             // --- Carregamento Inicial ---
             renderBlocks(); // Exibe os blocos iniciais quando a página carrega
+            
+            // Corrige o bug do modal que não aparece por causa da classe 'hidden'
+            // A lógica de exibição será controlada pelo JS via `style.display`
+            loginModal.classList.remove('hidden');
+            loginModal.style.display = 'none';
+
         });
     </script>
 </body>
