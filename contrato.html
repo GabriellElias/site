@@ -286,55 +286,49 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            body {
-                padding: 10px; /* Reduz o padding do corpo em telas menores */
-            }
-            .container {
+            body:not(.pdf-generation-mode) .container {
                 margin: 10px auto;
                 padding: 20px;
             }
-            h1 {
+            body:not(.pdf-generation-mode) h1 {
                 font-size: 1.8em;
             }
-            h2 {
+            body:not(.pdf-generation-mode) h2 {
                 font-size: 1.4em;
             }
-            h3 {
+            body:not(.pdf-generation-mode) h3 {
                 font-size: 1.1em;
             }
-            .field-group {
+            body:not(.pdf-generation-mode) .field-group {
                 grid-template-columns: 1fr; /* Coloca os campos em uma única coluna em telas menores */
                 gap: 15px;
             }
-            .signature-line {
+            body:not(.pdf-generation-mode) .signature-line {
                 width: 80%; /* Aumenta a largura da linha de assinatura em telas pequenas */
             }
-            .time-inputs input {
+            body:not(.pdf-generation-mode) .time-inputs input {
                 width: 100%; /* Ocupa a largura total para cada campo de hora em telas pequenas */
             }
-            .pdf-controls button {
+            body:not(.pdf-generation-mode) .pdf-controls button {
                 padding: 10px 20px;
                 font-size: 1em;
             }
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 5px;
-            }
-            .container {
+            body:not(.pdf-generation-mode) .container {
                 padding: 15px;
             }
-            h1 {
+            body:not(.pdf-generation-mode) h1 {
                 font-size: 1.5em;
             }
-            h2 {
+            body:not(.pdf-generation-mode) h2 {
                 font-size: 1.2em;
             }
-            h3 {
+            body:not(.pdf-generation-mode) h3 {
                 font-size: 1em;
             }
-            .logo-container img {
+            body:not(.pdf-generation-mode) .logo-container img {
                 max-width: 180px; /* Ajusta ainda mais para telas muito pequenas */
             }
         }
@@ -354,7 +348,7 @@
         <div id="contract-content">
             <!-- Content is now directly inside, without page wrappers -->
             <div class="logo-container">
-                <img src="slogan espaço Comemore jpeg.jpg" alt="Logo Buffet Espaço Comemore" onerror="this.onerror=null;this.src='https://placehold.co/250x100/A0A0A0/FFFFFF?text=Logo+Aqui';">
+                <img src="slogan espaço Comemore jpeg.jpg-7e929b14-c6d1-4536-ba8a-cafe379181ba" alt="Logo Buffet Espaço Comemore" onerror="this.onerror=null;this.src='https://placehold.co/250x100/A0A0A0/FFFFFF?text=Logo+Aqui';">
             </div>
             <h1>CONTRATO DE PRESTAÇÃO DE SERVIÇO DE ESPAÇO PARA EVENTOS PARTICULARES</h1>
 
@@ -614,7 +608,7 @@
                         </div>
                     </div>
                     
-                    <img src="Assinatura Digital LEANDRO RUY .jpg" alt="Assinatura do Contratado" style="display: block; margin: -35px auto 0; max-height: 100px;" onerror="this.onerror=null;this.src='https://placehold.co/350x100/EFEFEF/333333?text=Assinatura+Indisponível';">
+                    <img src="https://placehold.co/350x100/FFFFFF/000000?text=Assinatura+Contratado" alt="Assinatura do Contratado" style="display: block; margin: -35px auto 0; max-height: 100px;" onerror="this.onerror=null;this.src='https://placehold.co/350x100/EFEFEF/333333?text=Assinatura+Indisponível';">
                     
                     <div class="signature-line"></div>
                     <p>CONTRATADO</p>
@@ -976,13 +970,22 @@
             });
 
             // Handle PDF generation button click
-            gerarPdfBtn.addEventListener('click', function () {
+            gerarPdfBtn.addEventListener('click', async function () {
                 loadingMessage.style.display = 'block';
                 pdfErrorMessage.style.display = 'none';
                 successMessage.style.display = 'none';
                 gerarPdfBtn.disabled = true;
 
                 const content = document.getElementById('contract-content');
+                const container = document.querySelector('.container');
+                const originalMaxWidth = container.style.maxWidth;
+                
+                // Force desktop layout for PDF generation
+                document.body.classList.add('pdf-generation-mode');
+                container.style.maxWidth = '900px';
+                // Allow a moment for the browser to reflow the layout
+                await new Promise(resolve => setTimeout(resolve, 100));
+
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'pt', 'a4');
 
@@ -1003,36 +1006,53 @@
                 let endHour = horarioFimInput.value ? horarioFimInput.value.split(':')[0] : '00';
                 
                 const filename = `${formattedDate}_${tipoEvento}_${startHour}-${endHour}.pdf`;
-
-                pdf.html(content, {
-                    callback: function(doc) {
-                        doc.save(filename);
-                        
-                        loadingMessage.style.display = 'none';
-                        gerarPdfBtn.disabled = false;
-                        successMessage.textContent = 'PDF gerado e salvo com sucesso!';
-                        successMessage.style.display = 'block';
-                        showCustomMessageBox('Contrato PDF gerado e salvo com sucesso!');
-                    },
-                    margin: [40, 40, 40, 40],
-                    autoPaging: 'text',
-                    x: 0,
-                    y: 0,
-                    width: 515, // A4 width in pt (595) - margins (40 * 2)
-                    windowWidth: content.scrollWidth,
-                    html2canvas: {
+                
+                try {
+                    const canvas = await html2canvas(content, {
                         scale: 2,
                         useCORS: true,
-                        logging: false
+                        logging: false,
+                        width: 900, // Force desktop width for rendering
+                        windowWidth: 900
+                    });
+
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+                    
+                    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
+
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                    heightLeft -= pageHeight;
+
+                    while (heightLeft > 0) {
+                        position -= pageHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                        heightLeft -= pageHeight;
                     }
-                }).catch(err => {
+                    
+                    pdf.save(filename);
+                    
+                    successMessage.textContent = 'PDF gerado e salvo com sucesso!';
+                    successMessage.style.display = 'block';
+                    showCustomMessageBox('Contrato PDF gerado e salvo com sucesso!');
+
+                } catch (err) {
                     console.error('Erro ao gerar PDF:', err);
                     pdfErrorMessage.textContent = 'Erro ao gerar o PDF. Por favor, tente novamente. Detalhes: ' + err.message;
                     pdfErrorMessage.style.display = 'block';
                     showCustomMessageBox('Erro ao gerar o PDF. Por favor, tente novamente.');
+                } finally {
+                    // Restore original styles after PDF is created
+                    document.body.classList.remove('pdf-generation-mode');
+                    container.style.maxWidth = originalMaxWidth;
                     loadingMessage.style.display = 'none';
                     gerarPdfBtn.disabled = false;
-                });
+                }
             });
 
             // Initial setup on page load
